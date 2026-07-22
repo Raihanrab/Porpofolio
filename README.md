@@ -1,354 +1,713 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portofolio | Editor Video & Foto</title>
-    <style>
-        /* CSS Variables untuk Skema Warna */
-        :root {
-            --bg-color: #121212;
-            --surface-color: #1e1e1e;
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0a0;
-            --accent-color: #00adb5; /* Aksen modern cyan/teal */
-            --border-color: #333333;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portofolio — Editor Visual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0c0e;
+    --bg-panel: #14171b;
+    --bg-panel-2: #1a1e23;
+    --teal: #3a9aa3;
+    --teal-dim: #1f565c;
+    --teal-glow: rgba(58,154,163,0.18);
+    --orange: #e8873a;
+    --orange-dim: #b5652a;
+    --text: #edeae3;
+    --text-muted: #8a8f94;
+    --border: rgba(237,234,227,0.09);
+    --font-display: 'Oswald', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
 
-        /* Reset & Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a{ color: inherit; }
+  button{ font-family: inherit; cursor: pointer; }
+  img{ max-width: 100%; display:block; }
 
-        html {
-            scroll-behavior: smooth;
-            scroll-padding-top: 80px; /* Offset untuk fixed navbar */
-        }
+  /* ---------- layout shells ---------- */
+  .page{ min-height:100vh; overflow-x: hidden; }
+  .wrap{ max-width: 1180px; margin: 0 auto; padding: 0 28px; }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
+  /* ---------- nav ---------- */
+  .nav{
+    position: sticky; top:0; z-index: 50;
+    backdrop-filter: blur(10px);
+    background: rgba(10,12,14,0.72);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner{
+    max-width: 1180px; margin:0 auto; padding: 16px 28px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{
+    font-family: var(--font-display);
+    font-weight:600; letter-spacing: 0.04em;
+    font-size: 1.05rem; text-transform: uppercase;
+    display:flex; align-items:center; gap:10px;
+  }
+  .logo .dot{
+    width:9px; height:9px; border-radius:50%;
+    background: var(--orange);
+    box-shadow: 0 0 10px 2px var(--orange);
+  }
+  .nav-links{ display:flex; gap: 28px; list-style:none; margin:0; padding:0; }
+  .nav-links a{
+    text-decoration:none; color: var(--text-muted);
+    font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    transition: color .2s ease;
+  }
+  .nav-links a:hover{ color: var(--orange); }
+  .nav-toggle{ display:none; background:none; border:1px solid var(--border); color:var(--text); padding:8px 10px; border-radius:6px; }
 
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
+  /* ---------- hero ---------- */
+  .hero{
+    padding: 96px 28px 56px;
+    max-width: 1180px; margin: 0 auto;
+    position: relative;
+  }
+  .hero-eyebrow{
+    font-family: var(--font-mono); font-size: 0.82rem;
+    color: var(--teal); letter-spacing: 0.08em;
+    display:flex; align-items:center; gap: 12px;
+    margin-bottom: 22px;
+  }
+  .hero-eyebrow .rec{
+    width:8px; height:8px; border-radius:50%; background:#e0503a;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce){ .hero-eyebrow .rec{ animation:none; } }
+  @keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.25; } }
 
-        /* Typography */
-        h1, h2, h3, h4 { color: var(--text-primary); }
-        h2 {
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-            display: inline-block;
-            border-bottom: 3px solid var(--accent-color);
-            padding-bottom: 0.5rem;
-        }
-        p { color: var(--text-secondary); margin-bottom: 1rem; }
+  .hero-name{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(3rem, 9vw, 6.4rem);
+    line-height: 0.94;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    margin: 0;
+    outline: none;
+  }
+  .hero-name:focus{ box-shadow: 0 0 0 2px var(--orange); border-radius:4px; }
+  .hero-role{
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.1rem, 2.4vw, 1.6rem);
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 10px 0 22px;
+    outline:none;
+  }
+  .hero-bio{
+    max-width: 560px; color: var(--text-muted);
+    font-size: 1.02rem; margin-bottom: 34px;
+    outline:none;
+  }
+  .hero-bio:focus, .hero-role:focus{ box-shadow: 0 0 0 2px var(--teal); border-radius:4px; }
+  .edit-hint{
+    font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted);
+    opacity: 0.55; margin-bottom: 28px;
+  }
+  .hero-cta{ display:flex; gap:14px; flex-wrap:wrap; }
+  .btn{
+    font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.04em;
+    text-transform: uppercase; text-decoration:none;
+    padding: 13px 22px; border-radius: 3px; border: 1px solid var(--border);
+    transition: all .2s ease; display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn-primary{ background: var(--orange); border-color: var(--orange); color: #17110a; font-weight:600; }
+  .btn-primary:hover{ background: #f2984f; }
+  .btn-ghost{ color: var(--text); }
+  .btn-ghost:hover{ border-color: var(--teal); color: var(--teal); }
 
-        /* Navbar */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background-color: rgba(18, 18, 18, 0.9);
-            backdrop-filter: blur(10px);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 5%;
-            z-index: 1000;
-            border-bottom: 1px solid var(--border-color);
-        }
+  /* ---------- timeline scrubber (signature element) ---------- */
+  .scrubber{
+    position: relative; height: 64px; margin: 20px 0 8px;
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    background:
+      repeating-linear-gradient(90deg, transparent 0 38px, var(--border) 38px 39px);
+    overflow:hidden;
+  }
+  .scrubber-holes{
+    position:absolute; left:0; right:0; top:8px; display:flex; gap:30px; padding: 0 20px;
+  }
+  .scrubber-holes.bottom{ top:auto; bottom:8px; }
+  .scrubber-holes span{
+    width:8px; height:8px; border-radius:2px; background: var(--bg-panel-2);
+    border: 1px solid var(--border); flex-shrink:0;
+  }
+  .scrubber-track{
+    position:absolute; left:0; right:0; top:50%; transform: translateY(-50%);
+    height:2px; background: var(--border);
+  }
+  .scrubber-playhead{
+    position:absolute; top:0; bottom:0; width:2px; background: var(--orange);
+    box-shadow: 0 0 12px 2px var(--orange-dim);
+    animation: scrub 14s linear infinite;
+  }
+  .scrubber-playhead::after{
+    content:''; position:absolute; top:26px; left:-4px; width:10px; height:10px;
+    background: var(--orange); transform: rotate(45deg);
+  }
+  @keyframes scrub{ 0%{ left:0%; } 100%{ left:100%; } }
+  @media (prefers-reduced-motion: reduce){ .scrubber-playhead{ animation:none; left:22%; } }
+  .scrubber-tc{
+    position:absolute; right:20px; top:50%; transform: translateY(-50%);
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted);
+    background: var(--bg); padding: 2px 8px;
+  }
 
-        .logo { font-size: 1.5rem; font-weight: bold; letter-spacing: 1px; color: var(--text-primary);}
-        .logo span { color: var(--accent-color); }
+  /* ---------- sections ---------- */
+  .section{ padding: 84px 28px; max-width: 1180px; margin: 0 auto; }
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between;
+    gap: 20px; margin-bottom: 40px; flex-wrap:wrap;
+  }
+  .section-title{
+    font-family: var(--font-display); text-transform: uppercase;
+    font-size: clamp(1.7rem, 3.4vw, 2.6rem); font-weight:600; margin:0;
+    letter-spacing: -0.01em;
+  }
+  .section-tag{
+    font-family: var(--font-mono); font-size: 0.75rem; color: var(--teal);
+    letter-spacing: 0.08em; text-transform:uppercase;
+  }
+  .filters{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 28px; }
+  .filter-btn{
+    background: var(--bg-panel); border:1px solid var(--border); color: var(--text-muted);
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.05em;
+    text-transform: uppercase; padding: 8px 14px; border-radius: 999px;
+    transition: all .2s ease;
+  }
+  .filter-btn:hover{ color: var(--text); }
+  .filter-btn.active{ background: var(--teal-dim); border-color: var(--teal); color: var(--text); }
 
-        .nav-links { display: flex; gap: 1.5rem; list-style: none; }
-        .nav-links li a {
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-        .nav-links li a:hover { color: var(--accent-color); }
+  .grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 22px; }
 
-        /* Layout Container */
-        .container { max-width: 1200px; margin: 0 auto; padding: 4rem 5%; }
-        section { min-height: 80vh; padding: 4rem 0; }
+  .card{
+    background: var(--bg-panel); border: 1px solid var(--border); border-radius: 6px;
+    overflow:hidden; position:relative; transition: transform .25s ease, border-color .25s ease;
+  }
+  .card:hover{ transform: translateY(-4px); border-color: var(--teal-dim); }
+  .card-media{
+    aspect-ratio: 16/9; background: var(--bg-panel-2); position:relative; overflow:hidden;
+  }
+  .card-media img{ width:100%; height:100%; object-fit: cover; }
+  .card-media iframe{ width:100%; height:100%; border:0; }
+  .card.photo .card-media{ aspect-ratio: 4/5; }
+  .card-play{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    background: linear-gradient(180deg, rgba(10,12,14,0) 40%, rgba(10,12,14,0.55));
+    pointer-events:none;
+  }
+  .card-play svg{ width:44px; height:44px; opacity:0.9; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5)); }
+  .card-body{ padding: 14px 16px 16px; }
+  .card-title{ font-weight:600; font-size: 0.98rem; margin: 0 0 6px; }
+  .card-meta{
+    display:flex; align-items:center; justify-content:space-between;
+    font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .card-tag{ color: var(--orange); }
+  .card-del{
+    position:absolute; top:10px; right:10px; z-index:2;
+    width:26px; height:26px; border-radius:50%; border:1px solid var(--border);
+    background: rgba(10,12,14,0.65); color: var(--text); font-size: 0.85rem;
+    display:flex; align-items:center; justify-content:center; opacity:0; transition: opacity .2s ease;
+  }
+  .card:hover .card-del{ opacity:1; }
+  .card-del:hover{ border-color:#e0503a; color:#e0503a; }
 
-        /* Hero / Biodata Section */
-        #biodata {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            min-height: 100vh;
-            padding-top: 8rem;
-        }
+  .empty{
+    border: 1px dashed var(--border); border-radius: 6px; padding: 40px 24px;
+    text-align:center; color: var(--text-muted); font-size: 0.94rem;
+  }
+  .empty strong{ color: var(--text); display:block; margin-bottom: 6px; font-family: var(--font-display); text-transform:uppercase; letter-spacing:0.02em; font-size:1.05rem; }
 
-        .hero-content { flex: 1; padding-right: 2rem; }
-        .hero-content h3 { font-size: 1.5rem; color: var(--accent-color); font-weight: 400; margin-bottom: 0.5rem; }
-        .hero-content h1 { font-size: 3.5rem; margin-bottom: 1rem; line-height: 1.2; }
-        .hero-content p { font-size: 1.1rem; margin-bottom: 2rem; max-width: 600px; }
-        
-        .hero-image {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-        }
-        .hero-image img {
-            width: 350px;
-            height: 350px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid var(--surface-color);
-            box-shadow: 0 0 20px rgba(0, 173, 181, 0.2);
-        }
+  /* ---------- tentang ---------- */
+  .about-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items:start; }
+  .about-text{ color: var(--text-muted); font-size: 1.02rem; outline:none; }
+  .about-text:focus{ box-shadow: 0 0 0 2px var(--teal); border-radius:4px; }
+  .stat-list{ display:flex; flex-direction:column; gap:0; }
+  .stat-row{
+    display:flex; justify-content:space-between; padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 0.85rem;
+  }
+  .stat-row span:first-child{ color: var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; font-size:0.72rem; padding-top:3px; }
+  .stat-row span:last-child{ color: var(--text); font-size: 1.6rem; font-family: var(--font-display); }
 
-        /* Buttons */
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 1.8rem;
-            border-radius: 5px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            margin-right: 1rem;
-        }
-        .btn-primary { background-color: var(--accent-color); color: #121212; border: 2px solid var(--accent-color); }
-        .btn-primary:hover { background-color: transparent; color: var(--accent-color); }
-        .btn-outline { background-color: transparent; border: 2px solid var(--text-secondary); color: var(--text-primary); }
-        .btn-outline:hover { border-color: var(--accent-color); color: var(--accent-color); }
+  /* ---------- upload ---------- */
+  .upload-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .upload-panel{
+    background: var(--bg-panel); border:1px solid var(--border); border-radius: 8px; padding: 26px;
+  }
+  .upload-panel h3{
+    font-family: var(--font-display); text-transform: uppercase; letter-spacing:0.02em;
+    font-size: 1.15rem; margin: 0 0 4px;
+  }
+  .upload-panel .sub{ color: var(--text-muted); font-size: 0.85rem; margin: 0 0 22px; }
+  .field{ margin-bottom: 16px; }
+  .field label{
+    display:block; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing:0.06em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;
+  }
+  .field input[type="text"], .field input[type="url"], .field select{
+    width:100%; background: var(--bg); border:1px solid var(--border); color: var(--text);
+    padding: 11px 12px; border-radius: 4px; font-size: 0.92rem; font-family: var(--font-body);
+  }
+  .field input:focus, .field select:focus{ outline:none; border-color: var(--teal); }
+  .file-drop{
+    border: 1px dashed var(--border); border-radius: 4px; padding: 22px; text-align:center;
+    color: var(--text-muted); font-size: 0.85rem; position:relative; cursor:pointer;
+    transition: border-color .2s ease;
+  }
+  .file-drop:hover{ border-color: var(--teal); }
+  .file-drop input{ position:absolute; inset:0; opacity:0; cursor:pointer; }
+  .file-drop.has-file{ border-style:solid; border-color: var(--orange); color: var(--text); }
+  .btn-add{
+    width:100%; background: var(--teal-dim); border: 1px solid var(--teal); color: var(--text);
+    font-family: var(--font-mono); font-size: 0.8rem; letter-spacing:0.05em; text-transform:uppercase;
+    padding: 13px; border-radius: 4px; margin-top: 6px; transition: background .2s ease;
+  }
+  .btn-add:hover{ background: var(--teal); }
+  .form-msg{ font-family: var(--font-mono); font-size: 0.75rem; margin-top: 10px; min-height: 1em; }
+  .form-msg.err{ color: #e0503a; }
+  .form-msg.ok{ color: var(--teal); }
 
-        /* Grid Layout for Cards */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-        }
+  footer{
+    border-top: 1px solid var(--border); padding: 30px 28px;
+    font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);
+    text-align:center; letter-spacing: 0.04em;
+  }
 
-        /* Cards (Portfolio, Pengalaman, dll) */
-        .card {
-            background-color: var(--surface-color);
-            border-radius: 10px;
-            padding: 1.5rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid var(--border-color);
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            border-color: var(--accent-color);
-        }
-
-        /* Portfolio Specific */
-        .portfolio-img {
-            width: 100%;
-            height: 200px;
-            background-color: #333;
-            border-radius: 5px;
-            margin-bottom: 1rem;
-            object-fit: cover;
-        }
-        .card h4 { font-size: 1.2rem; margin-bottom: 0.5rem; }
-        .role-tag { display: inline-block; font-size: 0.8rem; background: rgba(0, 173, 181, 0.1); color: var(--accent-color); padding: 0.2rem 0.6rem; border-radius: 3px; margin-bottom: 1rem; }
-
-        /* Skills */
-        .skills-container { display: flex; flex-wrap: wrap; gap: 1rem; }
-        .skill-badge {
-            background-color: var(--surface-color);
-            padding: 0.8rem 1.5rem;
-            border-radius: 30px;
-            font-size: 1rem;
-            border: 1px solid var(--border-color);
-            transition: 0.3s;
-        }
-        .skill-badge:hover { border-color: var(--accent-color); color: var(--accent-color); }
-
-        /* Timeline (Pengalaman & Pendidikan) */
-        .timeline-item { margin-bottom: 2rem; padding-left: 1.5rem; border-left: 2px solid var(--border-color); position: relative; }
-        .timeline-item::before {
-            content: ''; position: absolute; left: -6px; top: 5px;
-            width: 10px; height: 10px; border-radius: 50%;
-            background-color: var(--accent-color);
-        }
-        .timeline-date { font-size: 0.9rem; color: var(--accent-color); margin-bottom: 0.5rem; font-weight: 600; }
-
-        /* Contact Section */
-        .contact-info { display: flex; flex-direction: column; gap: 1rem; }
-        .contact-item { display: flex; align-items: center; gap: 1rem; font-size: 1.1rem; }
-
-        /* Footer */
-        footer { text-align: center; padding: 2rem; background-color: var(--surface-color); color: var(--text-secondary); border-top: 1px solid var(--border-color); }
-
-        /* Responsive Design */
-        @media (max-width: 900px) {
-            #biodata { flex-direction: column-reverse; text-align: center; padding-top: 6rem; }
-            .hero-content { padding-right: 0; margin-top: 2rem; }
-            .hero-content p { margin: 0 auto 2rem; }
-            .nav-links { display: none; /* Hide on mobile for simplicity in this demo */ }
-        }
-    </style>
+  @media (max-width: 760px){
+    .nav-links{
+      position:absolute; top:100%; left:0; right:0; flex-direction:column;
+      background: var(--bg-panel); border-bottom: 1px solid var(--border);
+      padding: 18px 28px; gap: 16px; display:none;
+    }
+    .nav-links.open{ display:flex; }
+    .nav-toggle{ display:block; }
+    .about-grid, .upload-grid{ grid-template-columns: 1fr; }
+    .hero{ padding-top: 70px; }
+  }
+</style>
 </head>
 <body>
+<div class="page">
 
-    <!-- 1. Header / Navbar -->
-    <nav>
-        <div class="logo">[Nama]<span>.</span></div>
-        <ul class="nav-links">
-            <li><a href="#biodata">Biodata</a></li>
-            <li><a href="#portfolio">Portfolio</a></li>
-            <li><a href="#keahlian">Keahlian</a></li>
-            <li><a href="#pengalaman-kerja">Kerja</a></li>
-            <li><a href="#pengalaman-organisasi">Organisasi</a></li>
-            <li><a href="#pendidikan">Pendidikan</a></li>
-            <li><a href="#sertifikat">Sertifikat</a></li>
-            <li><a href="#kontak">Kontak</a></li>
-        </ul>
-    </nav>
+  <header class="nav">
+    <div class="nav-inner">
+      <div class="logo"><span class="dot"></span> Cut&nbsp;/&nbsp;Frame</div>
+      <button class="nav-toggle" id="navToggle" aria-label="Buka menu">☰</button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#showreel">Showreel</a></li>
+        <li><a href="#foto">Foto</a></li>
+        <li><a href="#tentang">Tentang</a></li>
+        <li><a href="#upload">Upload Karya</a></li>
+      </ul>
+    </div>
+  </header>
 
-    <!-- 2. Hero + Biodata -->
-    <section id="biodata">
-        <div class="container" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
-            <div class="hero-content">
-                <h3>Halo, perkenalkan saya</h3>
-                <h1>[Nama Lengkap Anda]</h1>
-                <p>Saya seorang <strong>Video & Photo Editor</strong> yang berdomisili di [Kota Anda]. Saya memiliki ketertarikan besar dalam merangkai visual yang menarik, cinematic color grading, dan penceritaan melalui medium digital. Siap membantu menghidupkan ide Anda menjadi karya visual yang luar biasa.</p>
-                <a href="#portfolio" class="btn btn-primary">Lihat Portfolio</a>
-                <a href="#kontak" class="btn btn-outline">Hubungi Saya</a>
+  <section class="hero" id="top">
+    <div class="hero-eyebrow"><span class="rec"></span> REC · <span class="tc" id="liveTc">00:00:00:00</span></div>
+    <h1 class="hero-name" id="heroName" contenteditable="true" spellcheck="false">Nama Kamu</h1>
+    <p class="hero-role" id="heroRole" contenteditable="true" spellcheck="false">Video &amp; Foto Editor</p>
+    <p class="hero-bio" id="heroBio" contenteditable="true" spellcheck="false">Bercerita lewat gambar bergerak dan diam — dari color grading sinematik sampai retouch foto yang rapi dan natural.</p>
+    <p class="edit-hint">Klik teks di atas untuk mengedit langsung</p>
+    <div class="hero-cta">
+      <a href="#showreel" class="btn btn-primary">▶ Lihat Showreel</a>
+      <a href="#foto" class="btn btn-ghost">Lihat Foto</a>
+    </div>
+  </section>
+
+  <div class="scrubber" aria-hidden="true">
+    <div class="scrubber-holes"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="scrubber-holes bottom"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="scrubber-track"></div>
+    <div class="scrubber-playhead"></div>
+    <div class="scrubber-tc">TIMELINE</div>
+  </div>
+
+  <section class="section" id="showreel">
+    <div class="section-head">
+      <h2 class="section-title">Showreel</h2>
+      <span class="section-tag" id="videoCount">0 video</span>
+    </div>
+    <div class="filters" id="videoFilters"></div>
+    <div class="grid" id="videoGrid"></div>
+  </section>
+
+  <section class="section" id="foto">
+    <div class="section-head">
+      <h2 class="section-title">Galeri Foto</h2>
+      <span class="section-tag" id="photoCount">0 foto</span>
+    </div>
+    <div class="filters" id="photoFilters"></div>
+    <div class="grid" id="photoGrid"></div>
+  </section>
+
+  <section class="section" id="tentang">
+    <div class="section-head">
+      <h2 class="section-title">Tentang</h2>
+      <span class="section-tag">Profil</span>
+    </div>
+    <div class="about-grid">
+      <p class="about-text" id="aboutText" contenteditable="true" spellcheck="false">Saya editor visual yang senang merangkai potongan gambar jadi cerita yang enak ditonton. Fokus di editing video — pacing, transisi, color grading — dan editing foto — retouch, komposisi, dan warna. Klik di sini untuk menulis cerita kamu sendiri.</p>
+      <div class="stat-list">
+        <div class="stat-row"><span>Total Karya</span><span id="statTotal">0</span></div>
+        <div class="stat-row"><span>Video</span><span id="statVideo">0</span></div>
+        <div class="stat-row"><span>Foto</span><span id="statPhoto">0</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="upload">
+    <div class="section-head">
+      <h2 class="section-title">Upload Karya</h2>
+      <span class="section-tag">Tersimpan otomatis di browser ini</span>
+    </div>
+    <div class="upload-grid">
+
+      <div class="upload-panel">
+        <h3>Tambah Video</h3>
+        <p class="sub">Tempel link YouTube atau Google Drive.</p>
+        <form id="videoForm">
+          <div class="field">
+            <label for="vTitle">Judul</label>
+            <input type="text" id="vTitle" placeholder="Contoh: Wedding Cinematic — Andi &amp; Rara" required>
+          </div>
+          <div class="field">
+            <label for="vUrl">Link video (YouTube / Drive)</label>
+            <input type="url" id="vUrl" placeholder="https://youtube.com/watch?v=..." required>
+          </div>
+          <div class="field">
+            <label for="vCat">Kategori</label>
+            <select id="vCat">
+              <option>Showreel</option>
+              <option>Musik</option>
+              <option>Iklan</option>
+              <option>Dokumenter</option>
+              <option>Wedding</option>
+              <option>Lainnya</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-add">Tambahkan Video</button>
+          <div class="form-msg" id="videoMsg"></div>
+        </form>
+      </div>
+
+      <div class="upload-panel">
+        <h3>Tambah Foto</h3>
+        <p class="sub">Unggah gambar dari perangkat kamu.</p>
+        <form id="photoForm">
+          <div class="field">
+            <label>File foto</label>
+            <div class="file-drop" id="fileDrop">
+              <span id="fileDropLabel">Klik atau seret foto ke sini (JPG/PNG)</span>
+              <input type="file" id="pFile" accept="image/*" required>
             </div>
-            <div class="hero-image">
-                <!-- Ganti src dengan URL foto Anda -->
-                <img src="https://via.placeholder.com/350" alt="Foto Profil [Nama Anda]">
-            </div>
-        </div>
-    </section>
+          </div>
+          <div class="field">
+            <label for="pTitle">Judul</label>
+            <input type="text" id="pTitle" placeholder="Contoh: Potret Golden Hour" required>
+          </div>
+          <div class="field">
+            <label for="pCat">Kategori</label>
+            <select id="pCat">
+              <option>Potret</option>
+              <option>Produk</option>
+              <option>Editorial</option>
+              <option>Landscape</option>
+              <option>Lainnya</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-add">Tambahkan Foto</button>
+          <div class="form-msg" id="photoMsg"></div>
+        </form>
+      </div>
 
-    <!-- 3. Portfolio -->
-    <section id="portfolio" class="container">
-        <h2>Portfolio</h2>
-        <div class="grid-container">
-            <!-- Card 1 -->
-            <a href="#" class="card">
-                <img src="https://via.placeholder.com/400x200" alt="Thumbnail Project" class="portfolio-img">
-                <h4>[Judul Proyek Video 1]</h4>
-                <span class="role-tag">Video Editor & Colorist</span>
-                <p>Deskripsi singkat mengenai proyek ini. Menggunakan transisi dinamis dan color grading cinematic untuk video komersial.</p>
-            </a>
-            <!-- Card 2 -->
-            <a href="#" class="card">
-                <img src="https://via.placeholder.com/400x200" alt="Thumbnail Project" class="portfolio-img">
-                <h4>[Judul Proyek Foto 1]</h4>
-                <span class="role-tag">Retoucher / Photo Editor</span>
-                <p>Proses retouching foto produk kecantikan untuk kebutuhan sosial media dan billboard digital.</p>
-            </a>
-            <!-- Card 3 -->
-            <a href="#" class="card">
-                <img src="https://via.placeholder.com/400x200" alt="Thumbnail Project" class="portfolio-img">
-                <h4>[Judul Proyek Video 2]</h4>
-                <span class="role-tag">Motion Graphic & Editor</span>
-                <p>Pembuatan video promosi event menggunakan perpaduan footage dan elemen motion graphics.</p>
-            </a>
-        </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- 4. Keahlian -->
-    <section id="keahlian" class="container">
-        <h2>Keahlian & Tools</h2>
-        <div class="skills-container">
-            <span class="skill-badge">Video Editing</span>
-            <span class="skill-badge">Photo Retouching</span>
-            <span class="skill-badge">Color Grading</span>
-            <span class="skill-badge">Basic Motion Graphic</span>
-            <span class="skill-badge">Adobe Premiere Pro</span>
-            <span class="skill-badge">Adobe After Effects</span>
-            <span class="skill-badge">Adobe Photoshop</span>
-            <span class="skill-badge">Adobe Lightroom</span>
-            <span class="skill-badge">DaVinci Resolve</span>
-        </div>
-    </section>
+  <footer>© <span id="year"></span> — Dibuat dengan Claude. Data tersimpan otomatis di browser kamu.</footer>
+</div>
 
-    <!-- 5. Pengalaman Kerja -->
-    <section id="pengalaman-kerja" class="container">
-        <h2>Pengalaman Kerja</h2>
-        <div class="timeline-item">
-            <div class="timeline-date">Jan 2022 - Sekarang</div>
-            <h4>Senior Video Editor - [Nama Perusahaan/Agency]</h4>
-            <p><strong>Tugas Utama:</strong> Bertanggung jawab penuh atas pasca-produksi konten video YouTube dan Instagram Reels klien. <br>
-            <strong>Pencapaian:</strong> Meningkatkan retensi penonton hingga 40% melalui gaya editing yang dinamis.</p>
-        </div>
-        <div class="timeline-item">
-            <div class="timeline-date">Mar 2020 - Des 2021</div>
-            <h4>Freelance Photo Editor - [Nama Platform/Klien]</h4>
-            <p><strong>Tugas Utama:</strong> Melakukan color correction dan batch editing foto pernikahan dan event. <br>
-            <strong>Pencapaian:</strong> Menyelesaikan lebih dari 50+ proyek tepat waktu dengan rating kepuasan 5/5.</p>
-        </div>
-    </section>
+<script>
+(function(){
+  document.getElementById('year').textContent = new Date().getFullYear();
 
-    <!-- 6. Pengalaman Organisasi -->
-    <section id="pengalaman-organisasi" class="container">
-        <h2>Pengalaman Organisasi</h2>
-        <div class="timeline-item">
-            <div class="timeline-date">2019 - 2020</div>
-            <h4>Ketua Divisi Media & Publikasi - [Nama Organisasi/Kampus]</h4>
-            <p><strong>Tanggung Jawab:</strong> Mengelola seluruh aset visual (foto & video) untuk kegiatan organisasi.<br>
-            <strong>Kontribusi:</strong> Memproduksi 10+ after movie acara tahunan yang digunakan untuk arsip dan promosi kampus.</p>
-        </div>
-    </section>
+  // ---------- nav toggle ----------
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
 
-    <!-- 7. Pendidikan -->
-    <section id="pendidikan" class="container">
-        <h2>Pendidikan</h2>
-        <div class="timeline-item">
-            <div class="timeline-date">Lulus Tahun 2022</div>
-            <h4>[Nama Universitas / Perguruan Tinggi]</h4>
-            <p>S1 [Nama Jurusan, misal: Ilmu Komunikasi / Desain Komunikasi Visual]</p>
-        </div>
-    </section>
+  // ---------- live timecode ----------
+  const tcEl = document.getElementById('liveTc');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduceMotion){
+    const start = performance.now();
+    function pad(n,l){ return String(n).padStart(l,'0'); }
+    function tick(now){
+      const elapsed = (now - start)/1000;
+      const h = Math.floor(elapsed/3600);
+      const m = Math.floor((elapsed%3600)/60);
+      const s = Math.floor(elapsed%60);
+      const f = Math.floor((elapsed%1)*24);
+      tcEl.textContent = pad(h,2)+':'+pad(m,2)+':'+pad(s,2)+':'+pad(f,2);
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
 
-    <!-- 8. Sertifikat / Prestasi -->
-    <section id="sertifikat" class="container">
-        <h2>Sertifikat & Prestasi</h2>
-        <div class="grid-container">
-            <div class="card">
-                <h4>Sertifikasi Adobe Certified Professional</h4>
-                <p>Visual Design using Adobe Photoshop (Tahun 2023)</p>
-            </div>
-            <div class="card">
-                <h4>Juara 1 Lomba Video Dokumenter Pendek</h4>
-                <p>Tingkat Nasional - Diselenggarakan oleh [Nama Instansi] (Tahun 2021)</p>
-            </div>
-        </div>
-    </section>
+  // ---------- persistence helpers ----------
+  const STORAGE_KEY = 'portfolio-items';
+  const PROFILE_KEY = 'portfolio-profile';
+  let items = [];
+  let profile = {};
 
-    <!-- 9. Kontak -->
-    <section id="kontak" class="container">
-        <h2>Mari Berkolaborasi!</h2>
-        <p>Apakah Anda memiliki proyek menarik? Jangan ragu untuk menghubungi saya melalui kontak di bawah ini.</p>
-        <br>
-        <div class="contact-info">
-            <div class="contact-item">
-                📧 <strong>Email:</strong> <a href="mailto:emailanda@gmail.com">emailanda@gmail.com</a>
-            </div>
-            <div class="contact-item">
-                📱 <strong>WhatsApp:</strong> <a href="https://wa.me/6281234567890">+62 812-3456-7890</a>
-            </div>
-            <div class="contact-item">
-                🌐 <strong>Instagram:</strong> <a href="#">@username_anda</a>
-            </div>
-            <div class="contact-item">
-                💼 <strong>LinkedIn:</strong> <a href="#">linkedin.com/in/namaanda</a>
-            </div>
-        </div>
-    </section>
+  async function loadAll(){
+    try{
+      const r = await window.storage.get(STORAGE_KEY, false);
+      items = r && r.value ? JSON.parse(r.value) : [];
+    }catch(e){ items = []; }
+    try{
+      const r2 = await window.storage.get(PROFILE_KEY, false);
+      profile = r2 && r2.value ? JSON.parse(r2.value) : {};
+    }catch(e){ profile = {}; }
+    applyProfile();
+    render();
+  }
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2024 [Nama Anda]. Dibuat dengan dedikasi dan kreativitas.</p>
-    </footer>
+  async function saveItems(){
+    try{ await window.storage.set(STORAGE_KEY, JSON.stringify(items), false); }
+    catch(e){ console.error('Gagal menyimpan karya', e); }
+  }
+  async function saveProfile(){
+    try{ await window.storage.set(PROFILE_KEY, JSON.stringify(profile), false); }
+    catch(e){ console.error('Gagal menyimpan profil', e); }
+  }
 
+  function applyProfile(){
+    if(profile.name) document.getElementById('heroName').textContent = profile.name;
+    if(profile.role) document.getElementById('heroRole').textContent = profile.role;
+    if(profile.bio) document.getElementById('heroBio').textContent = profile.bio;
+    if(profile.about) document.getElementById('aboutText').textContent = profile.about;
+  }
+
+  ['heroName','heroRole','heroBio'].forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('blur', () => {
+      const map = { heroName:'name', heroRole:'role', heroBio:'bio' };
+      profile[map[id]] = el.textContent.trim();
+      saveProfile();
+    });
+  });
+  document.getElementById('aboutText').addEventListener('blur', function(){
+    profile.about = this.textContent.trim();
+    saveProfile();
+  });
+
+  // ---------- id gen ----------
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+  // ---------- video url parsing ----------
+  function parseVideo(url){
+    let m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
+    if(m) return { kind:'youtube', embed:'https://www.youtube.com/embed/'+m[1], thumb:'https://img.youtube.com/vi/'+m[1]+'/hqdefault.jpg' };
+    m = url.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+    if(m) return { kind:'drive', embed:'https://drive.google.com/file/d/'+m[1]+'/preview', thumb:null };
+    return { kind:'link', embed:null, thumb:null, raw:url };
+  }
+
+  const playIcon = '<svg viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="11" fill="rgba(10,12,14,0.55)" stroke="white" stroke-width="1.2"/><path d="M10 8l6 4-6 4z"/></svg>';
+
+  // ---------- filters state ----------
+  let videoFilter = 'Semua';
+  let photoFilter = 'Semua';
+
+  function buildFilters(container, list, current, onPick){
+    const cats = ['Semua', ...new Set(list.map(i => i.category))];
+    container.innerHTML = '';
+    cats.forEach(cat => {
+      const b = document.createElement('button');
+      b.className = 'filter-btn' + (cat === current ? ' active' : '');
+      b.textContent = cat;
+      b.addEventListener('click', () => onPick(cat));
+      container.appendChild(b);
+    });
+  }
+
+  function render(){
+    const videos = items.filter(i => i.type === 'video');
+    const photos = items.filter(i => i.type === 'photo');
+
+    document.getElementById('videoCount').textContent = videos.length + ' video';
+    document.getElementById('photoCount').textContent = photos.length + ' foto';
+    document.getElementById('statTotal').textContent = items.length;
+    document.getElementById('statVideo').textContent = videos.length;
+    document.getElementById('statPhoto').textContent = photos.length;
+
+    buildFilters(document.getElementById('videoFilters'), videos, videoFilter, (cat) => { videoFilter = cat; render(); });
+    buildFilters(document.getElementById('photoFilters'), photos, photoFilter, (cat) => { photoFilter = cat; render(); });
+
+    renderGrid('videoGrid', videos.filter(v => videoFilter === 'Semua' || v.category === videoFilter), 'video');
+    renderGrid('photoGrid', photos.filter(p => photoFilter === 'Semua' || p.category === photoFilter), 'photo');
+  }
+
+  function renderGrid(gridId, list, type){
+    const grid = document.getElementById(gridId);
+    grid.innerHTML = '';
+    if(list.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'empty';
+      empty.innerHTML = type === 'video'
+        ? '<strong>Belum ada video</strong>Tambahkan showreel pertamamu lewat form Upload Karya di bawah.'
+        : '<strong>Belum ada foto</strong>Unggah foto pertamamu lewat form Upload Karya di bawah.';
+      grid.appendChild(empty);
+      return;
+    }
+    list.slice().reverse().forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'card' + (type === 'photo' ? ' photo' : '');
+
+      let mediaHtml = '';
+      if(type === 'video'){
+        if(item.embed){
+          mediaHtml = '<iframe src="'+item.embed+'" allowfullscreen loading="lazy"></iframe>';
+        } else {
+          mediaHtml = '<div class="card-play" style="position:static;height:100%;background:linear-gradient(135deg,var(--bg-panel-2),var(--bg-panel));">'+playIcon+'</div>';
+        }
+      } else {
+        mediaHtml = '<img src="'+item.image+'" alt="'+escapeHtml(item.title)+'" loading="lazy">';
+      }
+
+      card.innerHTML =
+        '<button class="card-del" data-id="'+item.id+'" title="Hapus">✕</button>' +
+        '<div class="card-media">'+mediaHtml+'</div>' +
+        '<div class="card-body">' +
+          '<p class="card-title">'+escapeHtml(item.title)+'</p>' +
+          '<div class="card-meta"><span class="card-tag">'+escapeHtml(item.category)+'</span><span>'+timeAgo(item.createdAt)+'</span></div>' +
+        '</div>';
+      grid.appendChild(card);
+    });
+
+    grid.querySelectorAll('.card-del').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        items = items.filter(i => i.id !== btn.dataset.id);
+        await saveItems();
+        render();
+      });
+    });
+  }
+
+  function escapeHtml(str){
+    return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function timeAgo(ts){
+    const diff = Date.now() - ts;
+    const day = 86400000;
+    if(diff < 3600000) return 'Baru saja';
+    if(diff < day) return Math.floor(diff/3600000) + ' jam lalu';
+    return Math.floor(diff/day) + ' hari lalu';
+  }
+
+  // ---------- video form ----------
+  document.getElementById('videoForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const msg = document.getElementById('videoMsg');
+    const title = document.getElementById('vTitle').value.trim();
+    const url = document.getElementById('vUrl').value.trim();
+    const category = document.getElementById('vCat').value;
+    if(!title || !url){ msg.textContent = 'Isi judul dan link dulu ya.'; msg.className = 'form-msg err'; return; }
+    const parsed = parseVideo(url);
+    items.push({ id: uid(), type:'video', title, category, embed: parsed.embed, thumb: parsed.thumb, kind: parsed.kind, createdAt: Date.now() });
+    await saveItems();
+    this.reset();
+    msg.textContent = 'Video ditambahkan ke showreel.';
+    msg.className = 'form-msg ok';
+    render();
+  });
+
+  // ---------- photo form ----------
+  const fileDrop = document.getElementById('fileDrop');
+  const fileInput = document.getElementById('pFile');
+  const fileLabel = document.getElementById('fileDropLabel');
+  fileInput.addEventListener('change', () => {
+    if(fileInput.files[0]){
+      fileDrop.classList.add('has-file');
+      fileLabel.textContent = fileInput.files[0].name;
+    }
+  });
+
+  function resizeImage(file, maxDim){
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let w = img.width, h = img.height;
+          if(w > h && w > maxDim){ h = Math.round(h * maxDim / w); w = maxDim; }
+          else if(h > maxDim){ w = Math.round(w * maxDim / h); h = maxDim; }
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', 0.82));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  document.getElementById('photoForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const msg = document.getElementById('photoMsg');
+    const title = document.getElementById('pTitle').value.trim();
+    const category = document.getElementById('pCat').value;
+    const file = fileInput.files[0];
+    if(!title || !file){ msg.textContent = 'Pilih foto dan isi judul dulu ya.'; msg.className = 'form-msg err'; return; }
+    msg.textContent = 'Mengunggah...';
+    msg.className = 'form-msg';
+    try{
+      const dataUrl = await resizeImage(file, 1400);
+      items.push({ id: uid(), type:'photo', title, category, image: dataUrl, createdAt: Date.now() });
+      await saveItems();
+      this.reset();
+      fileDrop.classList.remove('has-file');
+      fileLabel.textContent = 'Klik atau seret foto ke sini (JPG/PNG)';
+      msg.textContent = 'Foto ditambahkan ke galeri.';
+      msg.className = 'form-msg ok';
+      render();
+    }catch(err){
+      msg.textContent = 'Gagal memproses foto. Coba file lain.';
+      msg.className = 'form-msg err';
+    }
+  });
+
+  loadAll();
+})();
+</script>
 </body>
 </html>
